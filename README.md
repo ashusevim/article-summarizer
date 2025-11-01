@@ -4,7 +4,7 @@ An AI-powered article summarizer built with Next.js that extracts and summarizes
 
 ## Description
 
-Article Summarizer is a web application that allows users to paste any article URL or upload a PDF file and instantly receive an AI-generated summary. The tool uses the Mistral AI API for intelligent summarization and Cheerio for web scraping to extract article content.
+Article Summarizer is a web application that allows users to paste any article URL or upload a PDF file and instantly receive an AI-generated summary. The tool uses the Mistral AI API for intelligent summarization and Cheerio for web scraping to extract article content. This is a learning project, created for fun and experimentation.
 
 ## Features
 
@@ -101,4 +101,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see `LICENSE` for details.
