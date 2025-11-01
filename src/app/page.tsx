@@ -1,23 +1,44 @@
 "use client"
+import { CgNotes } from "react-icons/cg";
+import { GoDownload } from "react-icons/go";
 
 export default function Home() {
-    return (
-        <>
-            <div className="w-full h-screen flex justify-center items-center flex-col space-y-3">
-                <div>
-                    <h1 className="text-4xl text-center">Article Summariser</h1>
-                    <p className="text-gray-300">paste any article link and get an instant AI-powered summary</p>
-                </div>
-                <div>
-                    <form action="" method="post" className="space-x-1">
-                        <input type="url" name="" id="" className="border-2 rounded-lg p-1"/>
-                        <button className="border-2 rounded-lg p-1">Magic</button>
-                    </form>
-                </div>
-                <div className="w-1/2 h-[200px] border-2">
-                    
-                </div>
-            </div>
-        </>
-    );
+
+	const handleMagic = (e: { preventDefault: () => void; target: { value: any; }[]; }) => {
+		e.preventDefault();
+        let article = e.target[0].value
+        
+        // fetch('https://localhost:8080/api/')
+	}
+
+	return (
+		<>
+			<div className="w-full h-screen flex justify-center items-center flex-col">
+				<div className="p-2">
+					<h1 className="text-4xl text-center tracking-tight font-bold">Article Summariser</h1>
+					<p className="text-slate-800">paste any article link and get an instant AI-powered summary</p>
+				</div>
+				<div className="border-4 p-4 rounded-md">
+					<div>
+						<form method="post" className="space-x-1 space-y-2" onSubmit={handleMagic}>
+							<input type="url" name="" id="" className="border-2 rounded-lg px-2 py-1 w-100" placeholder="Enter the url" />
+							<button className="hover:bg-black hover:text-white border-2 rounded-lg px-3 py-1 cursor-pointer" type="submit" id="submit-magic">Magic</button>
+						</form>
+					</div>
+					<div className="w-full h-[350px] border-2 rounded-sm">
+						<div className="flex justify-around mt-2 space-x-3">
+							<div className="flex justify-center items-center p-1 space-x-1">
+								<CgNotes />
+								<h2>Summary</h2>
+							</div>
+							<div className="flex justify-center items-center cursor-pointer space-x-1 border p-2 rounded-md hover:bg-black hover:text-white">
+								<GoDownload className="cursor-pointer" />
+								<button type="submit" id="export" className="cursor-pointer">Export</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</>
+	);
 }
