@@ -83,8 +83,10 @@ export async function POST(request: Request) {
             messages: [{ role: 'user', content: prompt }]
         })
 
+        const summary = chatResponse.choices[0].message.content
+
         // success message
-        return NextResponse.json({ chatResponse }, { status: 200 })
+        return NextResponse.json({ summary }, { status: 200 })
     } catch (error) {
         return NextResponse.json({ error: "Invalid request" }, { status: 400 })
     }

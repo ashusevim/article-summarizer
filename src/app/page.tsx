@@ -1,24 +1,39 @@
 "use client"
+import { FormEvent } from "react";
 import { CgNotes } from "react-icons/cg";
 import { GoDownload } from "react-icons/go";
 
 export default function Home() {
 
-    const handleMagic = async (e: { preventDefault: () => void; target: { value: any; }[]; }) => {
+    const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let article = e.target[0].value
+        const form = e.currentTarget;
+        const data = new FormData(form);
+        const article = data.get("url");
 
-        const data = await fetch('http://localhost:3000/api/summarize', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ url: article })
-        })
+        if (typeof article !== "string" || !article) {
+            console.log("No URL provided");
+            return;
+        }
 
-        const summarizedText = await data.json()
+        try {
+            const response = await fetch('http://localhost:3000/api/summarize', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ url: article })
+            })
 
-        console.log(summarizedText)
+            if(!response.ok){
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            const summarizedText = await response.json()    
+            console.log(summarizedText)
+        } catch (error) {
+            console.log('Error:', error)   
+        }
     }
 
     return (
@@ -31,7 +46,7 @@ export default function Home() {
                 <div className="border-4 p-4 rounded-md">
                     <div>
                         <form method="post" className="space-x-1 space-y-2" onSubmit={handleMagic}>
-                            <input type="url" name="" id="" className="border-2 rounded-lg px-2 py-1 w-100" placeholder="Enter the url" />
+                            <input type="url" name="url" id="" className="border-2 rounded-lg px-2 py-1 w-100" placeholder="Enter the url" />
                             <button className="hover:bg-black hover:text-white border-2 rounded-lg px-3 py-1 cursor-pointer" type="submit" id="submit-magic">Magic</button>
                         </form>
                     </div>
