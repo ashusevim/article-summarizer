@@ -102,9 +102,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- [Mistral AI](https://mistral.ai) for the AI summarization API
-- [Cheerio](https://cheerio.js.org) for web scraping
-- [Next.js](https://nextjs.org) framework
