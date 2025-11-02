@@ -1,9 +1,12 @@
 "use client"
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { GoDownload } from "react-icons/go";
+import Markdown from 'markdown-to-jsx';
 
 export default function Home() {
+
+    const [summary, setSummary] = useState<string>("");
 
     const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,45 +28,81 @@ export default function Home() {
                 body: JSON.stringify({ url: article })
             })
 
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
             }
 
-            const summarizedText = await response.json()    
-            console.log(summarizedText)
+            const summarizedText = await response.json()
+            setSummary(summarizedText.summary)
         } catch (error) {
-            console.log('Error:', error)   
+            console.log('Error:', error)
         }
+    }
+
+    function handleExport(event: FormEvent<HTMLButtonElement>): void {
+        throw new Error("Function not implemented.");
     }
 
     return (
         <>
             <div className="w-full h-screen flex justify-center items-center flex-col">
-                <div className="p-2">
-                    <h1 className="text-4xl text-center tracking-tight font-bold">Article Summariser</h1>
-                    <p className="text-slate-800">paste any article link and get an instant AI-powered summary</p>
+                <div className="p-2 text-center">
+                    <h1 className="text-4xl tracking-tight font-bold">Article Summariser</h1>
+                    <p className="text-slate-800">
+                        Paste any article link and get an instant AI-powered summary
+                    </p>
                 </div>
-                <div className="border-4 p-4 rounded-md">
-                    <div>
-                        <form method="post" className="space-x-1 space-y-2" onSubmit={handleMagic}>
-                            <input type="url" name="url" id="" className="border-2 rounded-lg px-2 py-1 w-100" placeholder="Enter the url" />
-                            <button className="hover:bg-black hover:text-white border-2 rounded-lg px-3 py-1 cursor-pointer" type="submit" id="submit-magic">Magic</button>
-                        </form>
-                    </div>
-                    <div className="w-full h-[350px] border-2 rounded-sm">
-                        <div className="flex justify-around mt-2 space-x-3">
-                            <div className="flex justify-center items-center p-1 space-x-1">
+
+                <div className="border-4 p-4 rounded-md min-w-120">
+                    <form
+                        method="post"
+                        className="flex space-x-2 mb-4"
+                        onSubmit={handleMagic}
+                    >
+                        <input
+                            type="url"
+                            name="url"
+                            className="border-2 rounded-lg px-2 py-1 w-full"
+                            placeholder="Enter the URL"
+                        />
+                        <button
+                            className="hover:bg-black hover:text-white border-2 rounded-lg px-3 py-1 cursor-pointer"
+                            type="submit"
+                        >
+                            Magic
+                        </button>
+                    </form>
+
+                    <div className="h-[350px] border rounded-sm relative overflow-scroll">
+                        {/* Toolbar */}
+                        <div className="flex items-center justify-evenly space-x-10 p-2 sticky top-0 border-b bg-white z-20">
+                            <div className="flex items-center space-x-1">
                                 <CgNotes />
-                                <h2>Summary</h2>
+                                <h2 className="font-medium">Summary</h2>
                             </div>
-                            <div className="flex justify-center items-center cursor-pointer space-x-1 border p-2 rounded-md hover:bg-black hover:text-white">
-                                <GoDownload className="cursor-pointer" />
-                                <button type="submit" id="export" className="cursor-pointer">Export</button>
-                            </div>
+                            <button
+                                onClick={handleExport}
+                                type="button"
+                                className="flex items-center space-x-1 border p-2 rounded-md hover:bg-black hover:text-white transition"
+                            >
+                                <GoDownload />
+                                <span>Export</span>
+                            </button>
+                        </div>
+
+                        <div className="p-4">
+                            {summary ? (
+                                <Markdown className="prose prose-lg dark:prose-invert max-w-100">
+                                    {summary}
+                                </Markdown>
+                            ) : (
+                                <p className="text-gray-500">No summary yet.</p>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
+
         </>
     );
 }

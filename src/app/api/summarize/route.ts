@@ -1,23 +1,41 @@
 import { NextResponse } from "next/server"
 import { Mistral } from "@mistralai/mistralai";
 import { load } from "cheerio";
-const pdf = require('pdf-parse');
+import { PDFParse } from "pdf-parse"
 
 const apiKey = process.env.MISTRAL_API_KEY
 const client = new Mistral({ apiKey: apiKey })
 
 async function getTextFromURL(url: string) {
     try {
-        const response = await fetch(url)
+        const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`Failed to fetch url: ${response.statusText}`)
+            throw new Error(`Failed to fetch URL: ${response.statusText}`);
         }
-        const html = response.text()
-        const $ = load(await html)
-        return response.json()
+        const html = await response.text();
+        const $ = load(html);
+
+        // Try to get text from the <article> tag first
+        let mainText = $('article').text();
+
+        // If <article> is empty, try <main>
+        if (!mainText) {
+            mainText = $('main').text();
+        }
+
+        // As a fallback, get all <p> tags if the others fail
+        if (!mainText) {
+            mainText = $('p')
+                .map((i, el) => $(el).text())
+                .get()
+                .join('\n');
+        }
+
+        // Clean up whitespace
+        return mainText.replace(/\s\s+/g, ' ').trim();
     } catch (error) {
-        console.log("Error scraping url: ", error)
-        throw new Error('Could not scrap from the provided url.')
+        console.error('Error scraping URL:', error);
+        throw new Error('Could not scrape text from the provided URL.');
     }
 }
 
@@ -28,8 +46,11 @@ async function getTextFromPDF(file: File) {
         const buffer = Buffer.from(arrayBuffer)
 
         //parse the pdf
-        const data = await pdf(file)
-        return data.text
+        const parse = new PDFParse({ url: file.name });
+        const result = parse.getText()
+
+        return (await result).text
+
     } catch (error) {
         console.log("Error parsing pdf: ", error)
         throw new Error('Could not parse data from the provided pdf')
@@ -79,7 +100,7 @@ export async function POST(request: Request) {
         `
 
         const chatResponse = await client.chat.complete({
-            model: 'mistral-small-latest',
+            model: 'mistral-tiny-latest',
             messages: [{ role: 'user', content: prompt }]
         })
 
