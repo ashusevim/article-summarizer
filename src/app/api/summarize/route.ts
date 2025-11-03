@@ -89,11 +89,14 @@ export async function POST(request: Request) {
         }
 
         const prompt = `
-            Please provide a concise, expert summary of the following text.
-            Focus on the key points, main arguments, and conclusions.
-            Format the output as clean markdown.
-
-            TEXT: 
+            You are an editorial assistant.
+            Produce a Markdown summary with:
+            - A level-2 heading for the article title
+            - 3–5 bullet points covering key facts.
+            - A short "Key Quote" blockquote when a notable sentence exists.
+            Keep it under 180 words and avoid filler.
+            
+            TEXT:
             """
             ${textToSummarize}
             """
@@ -101,10 +104,12 @@ export async function POST(request: Request) {
 
         const chatResponse = await client.chat.complete({
             model: 'mistral-tiny-latest',
+            temperature: 0.1,
+            maxTokens: 600,
             messages: [{ role: 'user', content: prompt }]
         })
 
-        const summary = chatResponse.choices[0].message.content
+        const summary = chatResponse.choices[0].message.content?.toString().trim().replace(/\n{3,}/g, '\n\n') ?? ''
 
         // success message
         return NextResponse.json({ summary }, { status: 200 })

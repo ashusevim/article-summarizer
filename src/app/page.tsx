@@ -1,16 +1,11 @@
 "use client"
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { GoDownload } from "react-icons/go";
 import Markdown from 'markdown-to-jsx';
 
 export default function Home() {
     const [summary, setSummary] = useState<string>("");
-    const [theme, setTheme] = useState<string>("Light");
-
-    const handleToggle = async () => {
-        setTheme(theme == 'Dark' ? 'Light' : 'Dark')
-    }
 
     const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -69,7 +64,6 @@ export default function Home() {
     return (
         <>
             <div className="w-full h-screen flex justify-center items-center flex-col">
-                <button className="border rounded-2xl cursor-pointer px-3 py-1 " onClick={handleToggle}>{theme}</button>
                 <div className="p-2 text-center">
                     <h1 className="text-4xl tracking-tight font-bold">Article Summariser</h1>
                     <p className="text-slate-800">
@@ -77,7 +71,7 @@ export default function Home() {
                     </p>
                 </div>
 
-                <div className="border-4 p-4 rounded-md min-w-120">
+                <div className="border-4 p-4 rounded-md min-w-130">
                     <form
                         method="post"
                         className="flex space-x-2 mb-4"
@@ -86,7 +80,7 @@ export default function Home() {
                         <input
                             type="url"
                             name="url"
-                            className="border-2 rounded-lg px-2 py-1 w-full"
+                            className="border-2 rounded-lg px-2 py-1 w-full bg-white text-black"
                             placeholder="Enter the URL"
                         />
                         <button
@@ -116,7 +110,7 @@ export default function Home() {
 
                         <div className="p-4">
                             {summary ? (
-                                <Markdown className="prose prose-lg dark:prose-invert max-w-100">
+                                <Markdown className="prose prose-sm max-w-110 prose-headings:font-semibold prose-h2:text-xl prose-p:text-gray-700 prose-ul:list-disc prose-ul:ml-4 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic">
                                     {summary}
                                 </Markdown>
                             ) : (
