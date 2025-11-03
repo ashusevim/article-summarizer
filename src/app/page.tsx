@@ -1,12 +1,16 @@
 "use client"
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { GoDownload } from "react-icons/go";
 import Markdown from 'markdown-to-jsx';
 
 export default function Home() {
-
     const [summary, setSummary] = useState<string>("");
+    const [theme, setTheme] = useState<string>("Light");
+
+    const handleToggle = async () => {
+        setTheme(theme == 'Dark' ? 'Light' : 'Dark')
+    }
 
     const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -40,12 +44,32 @@ export default function Home() {
     }
 
     function handleExport(event: FormEvent<HTMLButtonElement>): void {
-        throw new Error("Function not implemented.");
+        if (!summary) {
+            console.log("Nothing to export")
+            return;
+        }
+
+        // create a blob with markdown content
+        const blob = new Blob([summary], { type: "text/markdown" })
+
+        // create a temporary URL for the blob
+        const url = URL.createObjectURL(blob)
+
+        // create a temporary anchor element and trigger download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "summary.md";
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url)
     }
 
     return (
         <>
             <div className="w-full h-screen flex justify-center items-center flex-col">
+                <button className="border rounded-2xl cursor-pointer px-3 py-1 " onClick={handleToggle}>{theme}</button>
                 <div className="p-2 text-center">
                     <h1 className="text-4xl tracking-tight font-bold">Article Summariser</h1>
                     <p className="text-slate-800">
@@ -83,7 +107,7 @@ export default function Home() {
                             <button
                                 onClick={handleExport}
                                 type="button"
-                                className="flex items-center space-x-1 border p-2 rounded-md hover:bg-black hover:text-white transition"
+                                className="flex items-center cursor-pointer space-x-1 border p-2 rounded-md hover:bg-black hover:text-white transition"
                             >
                                 <GoDownload />
                                 <span>Export</span>
