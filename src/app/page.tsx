@@ -91,7 +91,7 @@ export default function Home() {
                         </button>
                     </form>
 
-                    <div className="h-[350px] border rounded-sm relative overflow-scroll">
+                    <div className="h-[400px] border rounded-sm relative overflow-scroll">
                         {/* Toolbar */}
                         <div className="flex items-center justify-evenly space-x-10 p-2 sticky top-0 border-b bg-white z-20">
                             <div className="flex items-center space-x-1">

@@ -93,7 +93,7 @@ export async function POST(request: Request) {
             Produce a Markdown summary with:
             - A level-2 heading for the article title
             - 3–5 bullet points covering key facts.
-            - A short "Key Quote" blockquote when a notable sentence exists.
+            - A short "Key Quote" blockquote when a notable sentence exists(but keep the quote without bullet point and after 1 line).
             Keep it under 180 words and avoid filler.
             
             TEXT:
