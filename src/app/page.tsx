@@ -10,18 +10,20 @@ export default function Home() {
 
     const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true)
         const form = e.currentTarget;
         const data = new FormData(form);
         const article = data.get("url");
-
+        
         if (typeof article !== "string" || !article) {
             console.log("No URL provided");
             return;
         }
-
+        
+        setLoading(true)
         try {
-            const response = await fetch('http://localhost:3000/api/summarize', {
+            const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT || 'http://localhost:3000/api/summarize'
+
+            const response = await fetch(apiEndpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -37,6 +39,8 @@ export default function Home() {
             setSummary(summarizedText.summary)
         } catch (error) {
             console.log('Error:', error)
+        } finally {
+            setLoading(false)
         }
     }
 
