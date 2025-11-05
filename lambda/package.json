@@ -1,0 +1,10 @@
+{
+    "name": "article-summarizer-lambda",
+    "version": "1.0.0",
+    "description": "Lambda function for Article Summarizer",
+    "main": "index.js",
+    "dependencies": {
+        "@mistralai/mistralai": "^1.10.0",
+        "cheerio": "^1.1.2"
+    }
+}

@@ -7,8 +7,10 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint",
-        "cdk:deploy": "cd src/app/cdk && cdk deploy",
+        "cdk:bootstrap": "cd src/app/cdk && cdk bootstrap",
+        "cdk:deploy": "cd src/app/cdk && cdk deploy --require-approval never",
         "cdk:destroy": "cd src/app/cdk && cdk destroy",
+        "cdk:synth": "cd src/app/cdk && cdk synth",
         "lambda:build": "cd lambda && npm install"
     },
     "dependencies": {

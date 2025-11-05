@@ -6,19 +6,22 @@ import Markdown from 'markdown-to-jsx';
 
 export default function Home() {
     const [summary, setSummary] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
 
     const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError("")
+
         const form = e.currentTarget;
         const data = new FormData(form);
         const article = data.get("url");
-        
+
         if (typeof article !== "string" || !article) {
-            console.log("No URL provided");
+            console.log("Please enter a valid URL");
             return;
         }
-        
+
         setLoading(true)
         try {
             const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT || 'http://localhost:3000/api/summarize'
@@ -35,10 +38,18 @@ export default function Home() {
                 throw new Error(`HTTP error! status: ${response.status}`)
             }
 
-            const summarizedText = await response.json()
-            setSummary(summarizedText.summary)
+            const result = await response.json()
+            if (result.error) {
+                setError(result.error)
+                setSummary('')
+            }
+            else {
+                setSummary(result.summary)
+            }
         } catch (error) {
-            console.log('Error:', error)
+            console.log('Error:', error);
+            setError('Failed to summarize article. Please try again.');
+            setSummary("");
         } finally {
             setLoading(false)
         }
@@ -62,7 +73,6 @@ export default function Home() {
         a.download = "summary.md";
         document.body.appendChild(a);
         a.click();
-
         document.body.removeChild(a);
         URL.revokeObjectURL(url)
     }
@@ -93,7 +103,7 @@ export default function Home() {
                             className="hover:bg-black hover:text-white border-2 rounded-lg px-3 py-1 cursor-pointer"
                             type="submit"
                         >
-                            {loading == true ? "Processing" : "Magic"}
+                            {loading ? "Processing..." : "Magic"}
                         </button>
                     </form>
 
@@ -114,19 +124,22 @@ export default function Home() {
                             </button>
                         </div>
 
-                        <div className="p-4">
-                            {summary ? (
-                                <Markdown className="prose prose-sm max-w-126 prose-headings:font-semibold prose-h2:text-xl prose-p:text-gray-700 prose-ul:list-disc prose-ul:ml-1 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic">
-                                    {summary}
-                                </Markdown>
-                            ) : (
-                                <p className="text-gray-500">No summary yet.</p>
-                            )}
-                        </div>
+                        {error ? (
+                            <p className="text-red-500 text-lg mx-2 my-1">{error}</p>
+                        ) : (
+                            <div className="p-4">
+                                {summary ? (
+                                    <Markdown className="prose prose-sm max-w-126 prose-headings:font-semibold prose-h2:text-xl prose-p:text-gray-700 prose-ul:list-disc prose-ul:ml-1 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic">
+                                        {summary}
+                                    </Markdown>
+                                ) : (
+                                    <p className="text-gray-500">No summary yet.</p>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-
         </>
     );
 }
