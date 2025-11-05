@@ -1,39 +1,42 @@
 {
-  "name": "article-summarizer",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@aws-cdk/aws-apigateway": "^1.203.0",
-    "@aws-cdk/aws-lambda": "^1.203.0",
-    "@mistralai/mistralai": "^1.10.0",
-    "@tailwindcss/typography": "^0.5.19",
-    "aws-cdk-lib": "^2.222.0",
-    "aws-lambda": "^1.0.7",
-    "cheerio": "^1.1.2",
-    "markdown-to-jsx": "^8.0.0",
-    "next": "16.0.1",
-    "pdf-parse": "^2.4.5",
-    "postcss": "^8.5.6",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "react-icons": "^5.5.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.16",
-    "@types/aws-lambda": "^8.10.157",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.1",
-    "tailwindcss": "^4.1.16",
-    "typescript": "^5"
-  }
+    "name": "article-summarizer",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "eslint",
+        "cdk:deploy": "cd src/app/cdk && cdk deploy",
+        "cdk:destroy": "cd src/app/cdk && cdk destroy",
+        "lambda:build": "cd lambda && npm install"
+    },
+    "dependencies": {
+        "@aws-cdk/aws-apigateway": "^1.203.0",
+        "@aws-cdk/aws-lambda": "^1.203.0",
+        "@mistralai/mistralai": "^1.10.0",
+        "@tailwindcss/typography": "^0.5.19",
+        "aws-cdk-lib": "^2.222.0",
+        "aws-lambda": "^1.0.7",
+        "cheerio": "^1.1.2",
+        "markdown-to-jsx": "^8.0.0",
+        "next": "16.0.1",
+        "pdf-parse": "^2.4.5",
+        "postcss": "^8.5.6",
+        "react": "19.2.0",
+        "react-dom": "19.2.0",
+        "react-icons": "^5.5.0"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4.1.16",
+        "@types/aws-lambda": "^8.10.157",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "babel-plugin-react-compiler": "1.0.0",
+        "eslint": "^9",
+        "eslint-config-next": "16.0.1",
+        "tailwindcss": "^4.1.16",
+        "typescript": "^5"
+    }
 }
