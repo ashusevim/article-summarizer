@@ -2,9 +2,9 @@ import { NextResponse } from "next/server"
 import { Mistral } from "@mistralai/mistralai";
 import { load } from "cheerio";
 import { PDFParse } from "pdf-parse"
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 
-const apiKey = process.env.MISTRAL_API_KEY
-const client = new Mistral({ apiKey: apiKey })
+const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY })
 
 async function getTextFromURL(url: string) {
     try {

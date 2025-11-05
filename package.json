@@ -9,8 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.203.0",
+    "@aws-cdk/aws-lambda": "^1.203.0",
     "@mistralai/mistralai": "^1.10.0",
     "@tailwindcss/typography": "^0.5.19",
+    "aws-cdk-lib": "^2.222.0",
+    "aws-lambda": "^1.0.7",
     "cheerio": "^1.1.2",
     "markdown-to-jsx": "^8.0.0",
     "next": "16.0.1",
@@ -22,6 +26,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
+    "@types/aws-lambda": "^8.10.157",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -6,9 +6,11 @@ import Markdown from 'markdown-to-jsx';
 
 export default function Home() {
     const [summary, setSummary] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false)
 
     const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true)
         const form = e.currentTarget;
         const data = new FormData(form);
         const article = data.get("url");
@@ -71,7 +73,7 @@ export default function Home() {
                     </p>
                 </div>
 
-                <div className="border-4 p-4 rounded-md min-w-130">
+                <div className="border-4 p-4 rounded-md min-w-145">
                     <form
                         method="post"
                         className="flex space-x-2 mb-4"
@@ -87,7 +89,7 @@ export default function Home() {
                             className="hover:bg-black hover:text-white border-2 rounded-lg px-3 py-1 cursor-pointer"
                             type="submit"
                         >
-                            Magic
+                            {loading == true ? "Processing" : "Magic"}
                         </button>
                     </form>
 
@@ -110,7 +112,7 @@ export default function Home() {
 
                         <div className="p-4">
                             {summary ? (
-                                <Markdown className="prose prose-sm max-w-110 prose-headings:font-semibold prose-h2:text-xl prose-p:text-gray-700 prose-ul:list-disc prose-ul:ml-4 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic">
+                                <Markdown className="prose prose-sm max-w-126 prose-headings:font-semibold prose-h2:text-xl prose-p:text-gray-700 prose-ul:list-disc prose-ul:ml-1 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 prose-blockquote:pl-4 prose-blockquote:italic">
                                     {summary}
                                 </Markdown>
                             ) : (
