@@ -24,9 +24,7 @@ export default function Home() {
 
         setLoading(true)
         try {
-            const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT || 'http://localhost:3000/api/summarize'
-
-            const response = await fetch(apiEndpoint, {
+            const response = await fetch('/api/summarize', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
