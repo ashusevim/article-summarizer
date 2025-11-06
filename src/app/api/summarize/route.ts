@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Mistral } from "@mistralai/mistralai";
 import { load } from "cheerio";
 import { PDFParse } from "pdf-parse";
@@ -44,18 +44,17 @@ async function getTextFromPDF(file: File) {
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        //parse the pdf
-        const parse = new PDFParse({ url: file.name });
-        const result = parse.getText();
-
-        return (await result).text;
+        // Parse the pdf - pass the buffer directly
+        const data = new PDFParse(buffer);
+        
+        return (await data.getText()).text
     } catch (error) {
         console.log("Error parsing pdf: ", error);
         throw new Error("Could not parse data from the provided pdf");
     }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const contentType = request.headers.get("content-type") || "";
         let textToSummarize: string;
@@ -106,8 +105,10 @@ export async function POST(request: Request) {
         // success message
         return NextResponse.json({ summary }, { status: 200 });
     } catch (error) {
+        console.log('Error in POST handler:', error)
+        const errorMessage = error instanceof Error ? error.message : "Invalid request"
         return NextResponse.json(
-            { error: "Invalid request" },
+            { error: errorMessage },
             { status: 400 }
         );
     }
