@@ -9,7 +9,6 @@ Article Summarizer is a web application that allows users to paste any article U
 ## Features
 
 - 🔗 Summarize articles from URLs
-- 📄 Support for PDF files
 - 🤖 AI-powered summaries using Mistral AI
 - 📥 Export summaries as markdown files
 - 🎨 Clean and intuitive UI with Tailwind CSS
@@ -64,23 +63,27 @@ src/
 │   ├── api/
 │   │   └── summarize/
 │   │       └── route.ts          # API endpoint for summarization
-│   ├── page.tsx                  # Main UI component
+│   ├── favicon.ico               # Favicon for the app
+│   ├── globals.css               # Global styles
 │   ├── layout.tsx                # Root layout
-│   └── globals.css               # Global styles
+│   └── page.tsx                  # Main UI component
 ```
 
 ## API Endpoints
 
 ### POST `/api/summarize`
 
-Summarizes content from a provided URL.
+Summarizes content from a provided URL or a PDF file.
 
-**Request body:**
+**Request body for URL:**
 ```json
 {
   "url": "https://example.com/article"
 }
 ```
+
+**Request body for PDF file:**
+Send a `multipart/form-data` request with a `file` field containing the PDF.
 
 **Response:**
 ```json
