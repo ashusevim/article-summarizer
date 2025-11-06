@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Mistral } from "@mistralai/mistralai";
 import { load } from "cheerio";
-import { PDFParse } from "pdf-parse";
+
+const pdf = require('pdf-parse')
 
 const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
@@ -14,23 +15,14 @@ async function getTextFromURL(url: string) {
         const html = await response.text();
         const $ = load(html);
 
-        // Try to get text from the <article> tag first
-        let mainText = $("article").text();
-
-        // If <article> is empty, try <main>
-        if (!mainText) {
-            mainText = $("main").text();
-        }
-
-        // As a fallback, get all <p> tags if the others fail
-        if (!mainText) {
-            mainText = $("p")
-                .map((i, el) => $(el).text())
+        let mainText =
+            $("article").text() ||
+            $("main").text() ||
+            $("p")
+                .map((_, el) => $(el).text())
                 .get()
                 .join("\n");
-        }
 
-        // Clean up whitespace
         return mainText.replace(/\s\s+/g, " ").trim();
     } catch (error) {
         console.error("Error scraping URL:", error);
@@ -40,17 +32,13 @@ async function getTextFromURL(url: string) {
 
 async function getTextFromPDF(file: File) {
     try {
-        //convert the file to a buffer for pdf-parse
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-
-        // Parse the pdf - pass the buffer directly
-        const data = new PDFParse(buffer);
-        
-        return (await data.getText()).text
+        const data = await pdf(buffer);
+        return data.text;
     } catch (error) {
-        console.log("Error parsing pdf: ", error);
-        throw new Error("Could not parse data from the provided pdf");
+        console.error("Error parsing PDF:", error);
+        throw new Error("Could not parse data from the provided PDF.");
     }
 }
 
@@ -59,31 +47,32 @@ export async function POST(request: NextRequest) {
         const contentType = request.headers.get("content-type") || "";
         let textToSummarize: string;
 
-        // get text from request
         if (contentType.includes("application/json")) {
-            // it is a url
             const body = await request.json();
             const { url } = body;
+
             if (!url) {
                 return NextResponse.json(
                     { error: "No URL provided" },
                     { status: 400 }
-                )
+                );
             }
+
             textToSummarize = await getTextFromURL(url);
         } else if (contentType.includes("multipart/form-data")) {
-            // it is a PDF file
             const formData = await request.formData();
             const file = formData.get("file") as File;
+
             if (!file) {
                 throw new Error("No file provided in form data");
             }
+
             textToSummarize = await getTextFromPDF(file);
         } else {
             throw new Error(`Unsupported Content-Type: ${contentType}`);
         }
 
-        if (!textToSummarize) {
+        if (!textToSummarize?.trim()) {
             throw new Error("Could not extract any text to summarize.");
         }
 
@@ -102,19 +91,15 @@ export async function POST(request: NextRequest) {
                 .trim()
                 .replace(/\n{3,}/g, "\n\n") ?? "";
 
-        // success message
         return NextResponse.json({ summary }, { status: 200 });
     } catch (error) {
-        console.log('Error in POST handler:', error)
-        const errorMessage = error instanceof Error ? error.message : "Invalid request"
-        return NextResponse.json(
-            { error: errorMessage },
-            { status: 400 }
-        );
+        console.error("Error in POST handler:", error);
+        const errorMessage =
+            error instanceof Error ? error.message : "Invalid request";
+        return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
 }
 
-// Add a handler for other methods
 export async function GET() {
     return NextResponse.json(
         { error: "Method not allowed. Use POST." },

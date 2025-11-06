@@ -8,10 +8,15 @@ export default function Home() {
     const [summary, setSummary] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+    const [maintenance, setMaintenance] = useState<boolean>(
+        process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true"
+    );
 
     const handleMagic = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError("")
+
+        console.log(e)
 
         const form = e.currentTarget;
         const data = new FormData(form);
@@ -78,6 +83,13 @@ export default function Home() {
     return (
         <>
             <div className="w-full h-screen flex justify-center items-center flex-col">
+
+                {maintenance && (
+                    <div>
+                        <h1 className="text-2xl text-red-600">Under the maintenance. We will be back. Thanks for your patience</h1>
+                    </div>
+                )}
+
                 <div className="p-2 text-center">
                     <h1 className="text-4xl tracking-tight font-bold">Article Summariser</h1>
                     <p className="text-slate-800">
@@ -101,7 +113,7 @@ export default function Home() {
                             className="hover:bg-black hover:text-white border-2 rounded-lg px-3 py-1 cursor-pointer"
                             type="submit"
                         >
-                            {loading ? "Processing..." : "Magic"}
+                            {maintenance ? "WAIT" : loading ? "Processing..." : "Magic"}
                         </button>
                     </form>
 
