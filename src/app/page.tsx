@@ -16,8 +16,6 @@ export default function Home() {
         e.preventDefault();
         setError("")
 
-        console.log(e)
-
         const form = e.currentTarget;
         const data = new FormData(form);
         const article = data.get("url");

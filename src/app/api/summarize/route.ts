@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Mistral } from "@mistralai/mistralai";
 import { load } from "cheerio";
-import pdf from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 
 const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
@@ -14,7 +14,7 @@ async function getTextFromURL(url: string) {
         const html = await response.text();
         const $ = load(html);
 
-        let mainText =
+        const mainText =
             $("article").text() ||
             $("main").text() ||
             $("p")
@@ -32,7 +32,8 @@ async function getTextFromURL(url: string) {
 async function getTextFromPDF(file: File) {
     try {
         const arrayBuffer = await file.arrayBuffer();
-        const data = await pdf(Buffer.from(arrayBuffer));
+        const pdfParser = new PDFParse({ data: Buffer.from(arrayBuffer) });
+        const data = await pdfParser.getText();
         return data.text;
     } catch (error) {
         console.error("Error parsing PDF:", error);
