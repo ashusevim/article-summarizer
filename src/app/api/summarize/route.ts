@@ -66,7 +66,10 @@ export async function POST(request: Request) {
             const body = await request.json();
             const { url } = body;
             if (!url) {
-                console.log("No url is provided in the input field");
+                return NextResponse.json(
+                    { error: "No URL provided" },
+                    { status: 400 }
+                )
             }
             textToSummarize = await getTextFromURL(url);
         } else if (contentType.includes("multipart/form-data")) {
@@ -103,6 +106,17 @@ export async function POST(request: Request) {
         // success message
         return NextResponse.json({ summary }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+        return NextResponse.json(
+            { error: "Invalid request" },
+            { status: 400 }
+        );
     }
+}
+
+// Add a handler for other methods
+export async function GET() {
+    return NextResponse.json(
+        { error: "Method not allowed. Use POST." },
+        { status: 405 }
+    );
 }
