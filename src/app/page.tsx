@@ -49,7 +49,7 @@ export default function Home() {
             }
         } catch (error) {
             console.log('Error:', error);
-            setError('Failed to summarize article. Please try again.');
+            setError(error instanceof Error ? error.message : 'Failed to summarize article. Please try again.');
             setSummary("");
         } finally {
             setLoading(false)
